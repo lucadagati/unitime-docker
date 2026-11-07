@@ -1,239 +1,42 @@
+# UniTime in Docker
+
+Single-container deployment of **[UniTime](https://www.unitime.org/)** (university course/exam timetabling web application) on Apache Tomcat 9 with a local MySQL database. Useful for demos, teaching and evaluation — not a production setup.
+
+*Versione italiana in fondo.*
+
+## Contents
+
+| Path | Purpose |
+|---|---|
+| `Dockerfile` | Ubuntu 22.04 + OpenJDK 11 + MySQL; initialises the database from the UniTime SQL scripts |
+| `entrypoint.sh` | starts MySQL, then Tomcat as the unprivileged `tomcat` user |
+| `apache-tomcat-9.0.82/` | Tomcat with the UniTime web application already deployed in `webapps/UniTime` (stock docs/examples/manager apps removed) |
+| `unitime-4.8/doc/mysql/` | schema, blank data and demo ("woebegon") data loaded at build time |
+
+## Build and run
+
+```bash
+docker build -t unitime:latest .
+docker run -d --name unitime_container -p 8080:8080 unitime:latest
+docker logs -f unitime_container      # wait until the database update has finished
+```
+
+Open <http://localhost:8080/UniTime>. Demo login: `admin` / `admin` (from the sample data) — **change it immediately** and do not expose the container to untrusted networks.
+
+## Notes
+
+- The MySQL root account has no password inside the container and the database is not exposed; do not publish port 3306.
+- UniTime's database settings live in `apache-tomcat-9.0.82/webapps/UniTime/WEB-INF/classes/custom.properties`.
+- Data is stored inside the container; mount a volume on `/var/lib/mysql` to persist it.
+
 ## Italiano
 
+Questo repository contiene un `Dockerfile` e uno script di avvio per eseguire UniTime (gestione di orari e esami universitari) con Tomcat 9 e MySQL in un unico container.
 
-
-### UniTime Docker Deployment
-
-
-
-Questo repository contiene il Dockerfile e gli script necessari per configurare un'istanza di UniTime, un'applicazione web per la gestione del tempo nell'istruzione superiore, utilizzando Apache Tomcat e MySQL.
-
-
-
-#### Prerequisiti
-
-
-
-- Docker installato sul tuo sistema.
-
-- Clone del repository git con i file necessari inclusi.
-
-
-
-#### Struttura del Repository
-
-
-
-Il repository include i seguenti file e directory cruciali:
-
-
-
-- `Dockerfile`: definisce l'immagine Docker.
-
-- `entrypoint.sh`: script per inizializzare il servizio MySQL e avviare Tomcat.
-
-- `unitime-4.8/`: directory che contiene i file SQL e l'applicazione UniTime.
-
-- `apache-tomcat-9.0.82/`: directory contenente una distribuzione di Tomcat configurata per l'uso con UniTime.
-
-
-
-#### Costruzione dell'Immagine Docker
-
-
-
-```sh
-
+```bash
 docker build -t unitime:latest .
-
-```
-
-
-
-#### Esecuzione del Container
-
-
-
-```sh
-
 docker run -d --name unitime_container -p 8080:8080 unitime:latest
-
+docker logs -f unitime_container   # attendere il termine dell'aggiornamento del database
 ```
 
-
-
-#### Inizializzazione del Database
-
-
-
-Lo script `entrypoint.sh` inizializzerà il servizio MySQL e il database `unitime`.
-
-
-
-#### Monitoraggio dell'Aggiornamento del Database
-
-Attendi l'aggiornamento del Database, che può essere monitorato con il seguente comando
-
-```sh
-
-docker logs -f unitime_container
-
-```
-
-
-
-#### Accesso all'Applicazione
-
-
-
-L'applicazione UniTime sarà accessibile all'indirizzo `http://localhost:8080/UniTime`.
-
-
-
-Credenziali di accesso:
-
-
-
-- Tomcat: Username `admin`, Password `password`
-
-- UniTime: Username `admin`, Password `admin`
-
-
-
-#### Problemi Comuni e Supporto
-
-
-
-Per domande o assistenza, apri un'issue in questo repository.
-
-
-
----
-
-
-
-## English
-
-
-
-### UniTime Docker Deployment
-
-
-
-This repository contains the Dockerfile and scripts necessary to set up an instance of UniTime, a higher education time management web application, using Apache Tomcat and MySQL.
-
-
-
-#### Prerequisites
-
-
-
-- Docker installed on your system.
-
-- Git repository clone with all required files included.
-
-
-
-#### Repository Structure
-
-
-
-The repository includes the following critical files and directories:
-
-
-
-- `Dockerfile`: defines the Docker image.
-
-- `entrypoint.sh`: script to initialize MySQL service and start Tomcat.
-
-- `unitime-4.8/`: directory containing the SQL files and the UniTime application.
-
-- `apache-tomcat-9.0.82/`: directory with a distribution of Tomcat set up for use with UniTime.
-
-
-
-#### Building the Docker Image
-
-
-
-```sh
-
-docker build -t unitime:latest .
-
-```
-
-
-
-#### Running the Container
-
-
-
-```sh
-
-docker run -d --name unitime_container -p 8080:8080 unitime:latest
-
-```
-
-
-
-#### Database Initialization
-
-
-
-The `entrypoint.sh` script will initialize the MySQL service and the `unitime` database.
-
-
-
-#### Monitoring Database Update
-
-Wait for the Database Update!!!!! you can monitor with the following command
-
-
-
-```sh
-
-docker logs -f unitime_container
-
-```
-
-
-
-#### Application Access
-
-
-
-UniTime application will be accessible at `http://localhost:8080/UniTime`.
-
-
-
-Login credentials:
-
-
-
-- Tomcat: Username `admin`, Password `password`
-
-- UniTime: Username `admin`, Password `admin`
-
-
-
-#### Common Issues and Support
-
-
-
-For questions or assistance, please open an issue in this repository.
-
-
-
----
-
-
-
-Make sure to adjust any file paths or names as needed based on the actual files in your repository, and include any additional steps or requirements that are necessary for your project but not covered here.
-
-<<<<<<< HEAD
-
-=======
-
-
-
->>>>>>> 87a666d (UploadFiles)
+L'applicazione è raggiungibile su `http://localhost:8080/UniTime`; credenziali demo `admin` / `admin` (da cambiare subito). Per rendere persistenti i dati montare un volume su `/var/lib/mysql`.

@@ -36,8 +36,8 @@
   will also need to set the passwords to something appropriate.
 -->
 
-  <user username="admin" password="password" roles="manager-gui"/>
-  <user username="robot" password="password" roles="manager-script"/>
+  <!-- manager webapps are not shipped; define users here only if you add them -->
+  
 
 <!--
   The sample user and role entries below are intended for use with the

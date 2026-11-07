@@ -1,0 +1,6 @@
+.env
+*.log
+.DS_Store
+apache-tomcat-9.0.82/logs/
+apache-tomcat-9.0.82/work/
+apache-tomcat-9.0.82/temp/
